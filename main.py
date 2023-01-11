@@ -37,10 +37,10 @@ def setup_logger():
 
 
 def help(update, context):
-    update.message.reply_text('Mövcud əmrlər:\n' +
-                              '/oyun - Yeni oyun başladmağ\n' +
-                              '/master - Aparıcı olmağ üçün\n' +
-                              '/rating - Qrup üzrə reytinq', reply_to_message_id=True)
+    update.message.reply_text('Perintah yang tersedia:\n' +
+                              '/main - Mulai permainan baru\n' +
+                              '/master - Untuk menjadi seorang pemimpin\n' +
+                              '/rating - Peringkat berdasarkan grup', reply_to_message_id=True)
 
 
 def button(update, context):
@@ -66,20 +66,20 @@ def button(update, context):
 def command_start(update, context: CallbackContext):
     if update.effective_chat.type == "private":
         
-        addme = InlineKeyboardButton(text="😴 Qrupa əlavə edin!", url="https://t.me/nemesisgamebot?startgroup=a")
-        sohbet = InlineKeyboardButton(text="💬 Söhbət Qrupum", url="https://t.me/nemesischat")
-        oyun = InlineKeyboardButton(text="⚜️ Oyun Qrupum", url="https://t.me/nemesischat")
-        admin = InlineKeyboardButton(text="🐊 Sahib", url="https://t.me/rowlyn")
+        addme = InlineKeyboardButton(text="😴 Tambahkan ke grup!", url="https://t.me/nemesisgamebot?startgroup=a")
+        sohbet = InlineKeyboardButton(text="💬 Grup Obrolan Saya", url="https://t.me/nemesischat")
+        oyun = InlineKeyboardButton(text="⚜️ Official Grup", url="https://t.me/nemesischat")
+        admin = InlineKeyboardButton(text="🐊 Owner", url="https://t.me/rowlyn")
 
         keyboard = [[addme],[sohbet],[oyun],[admin]]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        update.message.reply_text('Şəxsi Söhbetde Oyun Oynaya Bilmerem❤️', reply_to_message_id=True, reply_markup=reply_markup)
+        update.message.reply_text('Saya Tidak Bisa Bermain Game di Obrolan Pribadi ❤️', reply_to_message_id=True, reply_markup=reply_markup)
     else:
         chat_id = update.message.chat.id
         user_id = update.message.from_user.id
         username = update.message.from_user.full_name
 
-        logger.info('Got command /oyun,'
+        logger.info('Got command /main,'
                     'chat_id={},'
                     'user_id'.format(chat_id,
                                      user_id))
@@ -87,7 +87,7 @@ def command_start(update, context: CallbackContext):
         game = get_or_create_game(chat_id)
         game.start()
 
-        update.message.reply_text('Söz Oyunu Başladı⚡'.format(username), reply_to_message_id=True)
+        update.message.reply_text('Permainan Kata Dimulai⚡'.format(username), reply_to_message_id=True)
 
         set_master(update, context)
 
@@ -104,13 +104,13 @@ def set_master(update, context):
 
     game.set_master(update.message.from_user.id)
 
-    show_word_btn = InlineKeyboardButton("sᴏ̈ᴢᴇ ʙᴀxᴍᴀɢ̆ ᴜ̈ᴄ̧ᴜ̈ɴ✅", callback_data='show_word')
-    change_word_btn = InlineKeyboardButton("sᴏ̈ᴢᴜ̈ ᴅᴇʏɪşᴅɪʀ♻️", callback_data='change_word')
+    show_word_btn = InlineKeyboardButton("MELIHAT KATA ✅", callback_data='show_word')
+    change_word_btn = InlineKeyboardButton("GANTI KATA ♻️", callback_data='change_word')
 
     keyboard = [[show_word_btn], [change_word_btn]]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    update.message.reply_text('[{}](tg://user?id={}) sᴏ̈ᴢᴜ̈ ʙᴀşᴀ sᴀʟɪʀ'.format(username,user_id), reply_to_message_id=True, reply_markup=reply_markup, parse_mode=ParseMode.MARKDOWN)
+    update.message.reply_text('[{}](tg://user?id={}) berbicara'.format(username,user_id), reply_to_message_id=True, reply_markup=reply_markup, parse_mode=ParseMode.MARKDOWN)
 
 
 def command_master(update: Update, context):
@@ -205,7 +205,7 @@ def is_word_answered(update, context):
     word = game.get_current_word()
 
     if game.is_word_answered(user_id, text):
-        update.message.reply_text('*{}* sᴏ̈ᴢᴜ̈ɴᴜ̈ [{}](tg://user?id={}) ᴛᴀᴘᴅɪ✅'.format(word, username,user_id), reply_to_message_id=True, parse_mode=ParseMode.MARKDOWN)
+        update.message.reply_text('*{}* kata [{}](tg://user?id={}) ditemukan ✅'.format(word, username,user_id), reply_to_message_id=True, parse_mode=ParseMode.MARKDOWN)
 
         game.update_grub(user_id, username)
 
@@ -233,7 +233,7 @@ def main():
 
     dp = updater.dispatcher
 
-    dp.add_handler(CommandHandler("oyun", command_start))
+    dp.add_handler(CommandHandler("main", command_start))
     dp.add_handler(CommandHandler("master", command_master))
     dp.add_handler(CommandHandler("show_word", command_show_word))
     dp.add_handler(CommandHandler("change_word", command_change_word))
